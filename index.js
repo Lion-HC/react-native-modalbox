@@ -332,31 +332,33 @@ var ModalBox = createReactClass({
     var closingState = false;
     var inSwipeArea  = false;
 
-    var onPanRelease = (evt, state) => {
+    var _this = this;
+
+    var onPanRelease = (evt, state) => {
       if (!inSwipeArea) return;
       inSwipeArea = false;
-      if (this.props.entry === 'top' ? -state.dy > this.props.swipeThreshold : state.dy > this.props.swipeThreshold)
-        this.animateClose();
-      else if (!this.state.isOpen) {
-        this.animateOpen();
+      if (_this.props.entry === 'top' ? -state.dy > _this.props.swipeThreshold : state.dy > _this.props.swipeThreshold)
+        _this.animateClose();
+      else {
+        _this.animateOpen();
       }
     };
 
     var animEvt = Animated.event([null, {customY: this.state.position}]);
 
     var onPanMove = (evt, state) => {
-      var newClosingState = this.props.entry === 'top' ? -state.dy > this.props.swipeThreshold : state.dy > this.props.swipeThreshold;
-      if (this.props.entry === 'top' ? state.dy > 0 : state.dy < 0) return;
-      if (newClosingState != closingState && this.props.onClosingState)
-        this.props.onClosingState(newClosingState);
+      var newClosingState = _this.props.entry === 'top' ? -state.dy > _this.props.swipeThreshold : state.dy > _this.props.swipeThreshold;
+      if (_this.props.entry === 'top' ? state.dy > 0 : state.dy < 0) return;
+      if (newClosingState !== closingState && _this.props.onClosingState)
+        _this.props.onClosingState(newClosingState);
       closingState = newClosingState;
-      state.customY = state.dy + this.state.positionDest;
+      state.customY = state.dy + _this.state.positionDest;
 
       animEvt(evt, state);
     };
 
     var onPanStart = (evt, state) => {
-      if (!this.props.swipeToClose || this.props.isDisabled || (this.props.swipeArea && (evt.nativeEvent.pageY - this.state.positionDest) > this.props.swipeArea)) {
+      if (!_this.props.swipeToClose || _this.props.isDisabled || (_this.props.swipeArea && (evt.nativeEvent.pageY - _this.state.positionDest) > _this.props.swipeArea)) {
         inSwipeArea = false;
         return false;
       }
