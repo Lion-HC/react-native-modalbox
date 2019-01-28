@@ -21,8 +21,6 @@ var createReactClass = require('create-react-class');
 
 var BackButton = BackHandler || BackAndroid;
 
-var screen = Dimensions.get('window');
-
 var styles = StyleSheet.create({
 
   wrapper: {
@@ -90,7 +88,8 @@ var ModalBox = createReactClass({
   },
 
   getInitialState: function () {
-    var position = this.props.entry === 'top' ? -screen.height : screen.height;
+    var window = Dimensions.get('window');
+    var position = this.props.entry === 'top' ? -window.height : window.height;
     return {
       position: this.props.startOpen ? new Animated.Value(0) : new Animated.Value(position),
       backdropOpacity: new Animated.Value(0),
@@ -98,10 +97,10 @@ var ModalBox = createReactClass({
       isAnimateClose: false,
       isAnimateOpen: false,
       swipeToClose: false,
-      height: screen.height,
-      width: screen.width,
-      containerHeight: screen.height,
-      containerWidth: screen.width,
+      height: window.height,
+      width: window.width,
+      containerHeight: window.height,
+      containerWidth: window.width,
       isInitialized: false,
       keyboardOffset: 0
     };
@@ -492,7 +491,11 @@ if (!this.props.coverScreen) return content;
     if (this.props.isDisabled) return;
     if (!this.state.isAnimateOpen && (!this.state.isOpen || this.state.isAnimateClose)) {
       this.onViewLayoutCalculated = () => {
-        this.setState({});
+        var window = Dimensions.get('window');
+        var position = this.props.entry === 'top' ? -window.height : window.height;
+        this.setState({
+          position: new Animated.Value(position),
+        });
         this.animateOpen();
         if(this.props.backButtonClose && Platform.OS === 'android') BackButton.addEventListener('hardwareBackPress', this.onBackPress)
         delete this.onViewLayoutCalculated;
